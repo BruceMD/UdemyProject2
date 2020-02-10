@@ -19,6 +19,7 @@ print(newDeck)
 
 count = 0
 hitNum = 0
+hitNumD = 0
 labelNext1 = Label(font=("Courier", 20), height=2, width=3)
 labelNext2 = Label(font=("Courier", 20), height=2, width=3)
 labelNext3 = Label(font=("Courier", 20), height=2, width=3)
@@ -32,8 +33,9 @@ def deal():
         shuffle(newDeck)
         count = 0
 
-    global hitNum
+    global hitNum, hitNumD
     global labelNext1, labelNext2, labelNext3
+    global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global hand, dHand
 
     hand, dHand = [], []
@@ -44,8 +46,16 @@ def deal():
         labelNext3.place_forget()
     except:
         pass
+    try:
+        labelNextD1.place_forget()
+        labelNextD2.place_forget()
+        labelNextD3.place_forget()
+        labelNextD4.place_forget()
+    except:
+        pass
 
     hitNum = 0
+    hitNumD = 0
     labelP1 = Label(middleFrameLeft, text=newDeck[count], font=("Courier", 20), height=2, width=3)
     hand.append(newDeck[count][0])
     labelP2 = Label(middleFrameLeft, text=newDeck[count+1], font=("Courier", 20), height=2, width=3)
@@ -98,15 +108,57 @@ def hit():
         labelYouHandTotal = Label(middleFrameLeft, text=check(hand), pady=5, font=("Courier", 20), bg='blue')
         labelYouHandTotal.place(x=230, y=200)
 
-#        bust(check(hand))
+        if bust(check(hand)):
+            print("You lose\nPlease press Deal")
+
     else:
-        bust(check(hand))
         stand()
 
 
 def stand():
-    pass
+    global count
+    global hitNumD
+    global labelNextD1, labelNextD2, labelNextD3, labelNextD4
+    global hand, dHand
+    print("CHECKING STEP: {}".format(dHand))
+    while check(dHand) < 17:
+        if hitNumD < 4:
+            count += 1
+            if hitNumD == 0:
+                labelNextD1 = Label(middleFrameRight, text=newDeck[count], font=("Courier", 20), height=2, width=3)
+                labelNextD1.place(x=80, y=50)
+                hitNumD += 1
+            elif hitNumD == 1:
+                labelNextD2 = Label(middleFrameRight, text=newDeck[count], font=("Courier", 20), height=2, width=3)
+                labelNextD2.place(x=150, y=50)
+                hitNumD += 1
+            elif hitNumD == 2:
+                labelNextD3 = Label(middleFrameRight, text=newDeck[count], font=("Courier", 20), height=2, width=3)
+                labelNextD3.place(x=220, y=50)
+                hitNumD += 1
+            else:
+                labelNextD4 = Label(middleFrameRight, text=newDeck[count], font=("Courier", 20), height=2, width=3)
+                labelNextD4.place(x=290, y=50)
+                hitNumD += 1
+            dHand.append(newDeck[count][0])
+            print(check(dHand))
 
+        global labelDealerHandTotal
+        labelDealerHandTotal.place_forget()
+        labelDealerHandTotal = Label(middleFrameRight, text=check(dHand), pady=5, font=("Courier", 20), bg='yellow')
+        labelDealerHandTotal.place(x=230, y=200)
+
+        if check(dHand) > 21:
+            print("Dealer goes bust, you win!")
+            break
+    if check(dHand) < 22 and check(hand) < 22:
+        if check(dHand) > check(hand):
+            print("Dealer wins!")
+        elif check(dHand) == check(hand):
+            print("Push")
+        else:
+            print("You win!")
+######################################################################################################################
 
 def check(h):
     total = 0
