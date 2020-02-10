@@ -35,6 +35,7 @@ labelDealerHandTotal = Label(pady=5, font=("Courier", 20), bg='blue')
 labelP1 = Label()
 labelP2 = Label()
 labelD = Label()
+buttonRefreshAlt = Button()
 
 
 def deal():
@@ -78,6 +79,8 @@ def hit():
     global labelNext1, labelNext2, labelNext3
     global hand
     global money, betValue
+    global buttonRefreshAlt
+    global labelDealerWinner
 
     if hitNum < 3:
         count += 1
@@ -102,8 +105,9 @@ def hit():
 
         if (check(hand) > 21):
             print("You went BUST")
-            sleep(3)
-            refresh()
+            labelDealerWinner.place(x=100, y=100)
+            buttonRefreshAlt = Button(bottomFrame, text="Play Again", font=("Courier", 40), command=refresh)
+            buttonRefreshAlt.place(x=30, y=7)
 
     else:
         stand()
@@ -115,6 +119,8 @@ def stand():
     global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global hand, dHand
     global money, betValue
+    global buttonRefreshAlt
+    global labelDealerWinner, labelPlayerWinner
 
     while check(dHand) < 17:
         if hitNumD < 4:
@@ -142,27 +148,30 @@ def stand():
         labelDealerHandTotal = Label(middleFrameRight, text=check(dHand), pady=5, font=("Courier", 20), bg='yellow')
         labelDealerHandTotal.place(x=230, y=200)
 
-        if check(dHand) > 21:
-            print("Dealer goes bust, you win!")
-            money += betValue*2
-            #sleep(2)
-            #refresh()
-            break
-    if check(dHand) < 22 or check(hand) < 22:
+    if check(dHand) > 21:
+        print("Dealer goes bust, you win!")
+        money += betValue*2
+        labelPlayerWinner.place(x=100, y=100)
+        buttonRefreshAlt = Button(bottomFrame, text="Play Again", font=("Courier", 40), command=refresh)
+        buttonRefreshAlt.place(x=30, y=7)
+
+    elif check(dHand) < 22 and check(hand) < 22:
         if check(dHand) > check(hand):
             print("Dealer wins!")
-            #sleep(2)
-            #refresh()
+            labelDealerWinner.place(x=100, y=100)
+            buttonRefreshAlt = Button(bottomFrame, text="Play Again", font=("Courier", 40), command=refresh)
+            buttonRefreshAlt.place(x=30, y=7)
         elif check(dHand) == check(hand):
             print("Push")
             money += betValue
-            #sleep(2)
-            #refresh()
+            buttonRefreshAlt = Button(bottomFrame, text="Play Again", font=("Courier", 40), command=refresh)
+            buttonRefreshAlt.place(x=30, y=7)
         else:
             print("You win!")
             money += betValue*2
-            #sleep(2)
-            #refresh()
+            labelPlayerWinner.place(x=100, y=100)
+            buttonRefreshAlt = Button(bottomFrame, text="Play Again", font=("Courier", 40), command=refresh)
+            buttonRefreshAlt.place(x=30, y=7)
 
 
 def check(h):
@@ -223,6 +232,8 @@ def refresh():
     global hand, dHand
     global hitNum, hitNumD
     global money, betValue
+    global labelDealerWinner, labelPlayerWinner
+    global buttonRefreshAlt
 
     hand, dHand = [], []
     hitNum, hitNumD = 0, 0
@@ -251,6 +262,18 @@ def refresh():
     try:
         labelMoney.place_forget()
         labelBet.place_forget()
+    except:
+        pass
+    try:
+        labelPlayerWinner.place_forget()
+    except:
+        pass
+    try:
+        labelDealerWinner.place_forget()
+    except:
+        pass
+    try:
+        buttonRefreshAlt.place_forget()
     except:
         pass
 
@@ -305,5 +328,8 @@ buttonBet.place(x=330, y=30)
 
 buttonRefresh = Button(bottomFrame, text="Refresh", font=("Courier", 30), command=refresh)
 buttonRefresh.place(x=800, y=30)
+
+labelPlayerWinner = Label(middleFrameLeft, text='WINNER', font=("Courier", 40), bg='blue')
+labelDealerWinner = Label(middleFrameRight, text='WINNER', font=("Courier", 40), bg='yellow')
 
 mWindow.mainloop()
