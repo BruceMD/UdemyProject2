@@ -1,5 +1,6 @@
 from tkinter import *
 from random import *
+from time import *
 
 
 money = 1000
@@ -24,15 +25,23 @@ hitNumD = 0
 labelNext1 = Label(font=("Courier", 20), height=2, width=3)
 labelNext2 = Label(font=("Courier", 20), height=2, width=3)
 labelNext3 = Label(font=("Courier", 20), height=2, width=3)
+labelNextD1 = Label()
+labelNextD2 = Label()
+labelNextD3 = Label()
+labelNextD4 = Label()
 
 labelYouHandTotal = Label(pady=5, font=("Courier", 20), bg='blue')
 labelDealerHandTotal = Label(pady=5, font=("Courier", 20), bg='blue')
+labelP1 = Label()
+labelP2 = Label()
+labelD = Label()
 
 
 def deal():
     global count
     global hitNum, hitNumD
-#    global labelNext1, labelNext2, labelNext3
+    global labelP1, labelP2, labelD
+#   global labelNext1, labelNext2, labelNext3
 #   global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global hand, dHand
 
@@ -52,6 +61,7 @@ def deal():
         labelDealerHandTotal.place_forget()
     except:
         pass
+
     labelYouHandTotal = Label(middleFrameLeft, text=check(hand), pady=5, font=("Courier", 20), bg='blue')
     labelYouHandTotal.place(x=230, y=200)
     labelDealerHandTotal = Label(middleFrameRight, text=check(dHand), pady=5, font=("Courier", 20), bg='yellow')
@@ -67,12 +77,14 @@ def hit():
     global hitNum
     global labelNext1, labelNext2, labelNext3
     global hand
+    global money, betValue
+
     if hitNum < 3:
         count += 1
         if hitNum == 0:
             labelNext1 = Label(middleFrameLeft, text=newDeck[count], font=("Courier", 20), height=2, width=3)
             labelNext1.place(x=150, y=50)
-            hitNum +=1
+            hitNum += 1
         elif hitNum == 1:
             labelNext2 = Label(middleFrameLeft, text=newDeck[count], font=("Courier", 20), height=2, width=3)
             labelNext2.place(x=220, y=50)
@@ -88,8 +100,10 @@ def hit():
         labelYouHandTotal = Label(middleFrameLeft, text=check(hand), pady=5, font=("Courier", 20), bg='blue')
         labelYouHandTotal.place(x=230, y=200)
 
-        if bust(check(hand)):
-            print("You lose\nPlease press Deal")
+        if (check(hand) > 21):
+            print("You went BUST")
+            sleep(3)
+            refresh()
 
     else:
         stand()
@@ -100,7 +114,8 @@ def stand():
     global hitNumD
     global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global hand, dHand
-    print("CHECKING STEP: {}".format(dHand))
+    global money, betValue
+
     while check(dHand) < 17:
         if hitNumD < 4:
             count += 1
@@ -121,7 +136,6 @@ def stand():
                 labelNextD4.place(x=290, y=50)
                 hitNumD += 1
             dHand.append(newDeck[count][0])
-            print(check(dHand))
 
         global labelDealerHandTotal
         labelDealerHandTotal.place_forget()
@@ -130,14 +144,25 @@ def stand():
 
         if check(dHand) > 21:
             print("Dealer goes bust, you win!")
+            money += betValue*2
+            #sleep(2)
+            #refresh()
             break
-    if check(dHand) < 22 and check(hand) < 22:
+    if check(dHand) < 22 or check(hand) < 22:
         if check(dHand) > check(hand):
             print("Dealer wins!")
+            #sleep(2)
+            #refresh()
         elif check(dHand) == check(hand):
             print("Push")
+            money += betValue
+            #sleep(2)
+            #refresh()
         else:
             print("You win!")
+            money += betValue*2
+            #sleep(2)
+            #refresh()
 
 
 def check(h):
@@ -191,15 +216,24 @@ def refresh():
     if count > 120:
         shuffle(newDeck)
         count = 0
+    global labelP1, labelP2, labelD
     global labelNext1, labelNext2, labelNext3
     global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global labelMoney, labelBet
     global hand, dHand
     global hitNum, hitNumD
-    global money
+    global money, betValue
 
     hand, dHand = [], []
     hitNum, hitNumD = 0, 0
+    betValue = 0
+
+    try:
+        labelP1.place_forget()
+        labelP2.place_forget()
+        labelD.place_forget()
+    except:
+        pass
 
     try:
         labelNext1.place_forget()
