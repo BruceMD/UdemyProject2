@@ -3,6 +3,7 @@ from random import *
 
 
 money = 1000
+betValue = 0
 hand = []
 dHand = []
 
@@ -27,35 +28,14 @@ labelNext3 = Label(font=("Courier", 20), height=2, width=3)
 labelYouHandTotal = Label(pady=5, font=("Courier", 20), bg='blue')
 labelDealerHandTotal = Label(pady=5, font=("Courier", 20), bg='blue')
 
+
 def deal():
     global count
-    if count > 120:
-        shuffle(newDeck)
-        count = 0
-
     global hitNum, hitNumD
-    global labelNext1, labelNext2, labelNext3
-    global labelNextD1, labelNextD2, labelNextD3, labelNextD4
+#    global labelNext1, labelNext2, labelNext3
+#   global labelNextD1, labelNextD2, labelNextD3, labelNextD4
     global hand, dHand
 
-    hand, dHand = [], []
-
-    try:
-        labelNext1.place_forget()
-        labelNext2.place_forget()
-        labelNext3.place_forget()
-    except:
-        pass
-    try:
-        labelNextD1.place_forget()
-        labelNextD2.place_forget()
-        labelNextD3.place_forget()
-        labelNextD4.place_forget()
-    except:
-        pass
-
-    hitNum = 0
-    hitNumD = 0
     labelP1 = Label(middleFrameLeft, text=newDeck[count], font=("Courier", 20), height=2, width=3)
     hand.append(newDeck[count][0])
     labelP2 = Label(middleFrameLeft, text=newDeck[count+1], font=("Courier", 20), height=2, width=3)
@@ -158,7 +138,7 @@ def stand():
             print("Push")
         else:
             print("You win!")
-######################################################################################################################
+
 
 def check(h):
     total = 0
@@ -185,6 +165,65 @@ def bust(x):
         return True
     return False
 
+
+def bet():
+    global money, betValue
+    global labelMoney, labelBet
+
+    try:
+        labelMoney.place_forget()
+        labelBet.place_forget()
+    except:
+        pass
+
+    if money >= 100:
+        betValue += 100
+        money -= 100
+
+    labelMoney = Label(bottomFrame, text=money, font=("Courier", 40), bg='pink')
+    labelMoney.place(x=630, y=30)
+    labelBet = Label(bottomFrame, text=betValue, font=("Courier", 40), bg='pink')
+    labelBet.place(x=430, y=30)
+
+
+def refresh():
+    global count
+    if count > 120:
+        shuffle(newDeck)
+        count = 0
+    global labelNext1, labelNext2, labelNext3
+    global labelNextD1, labelNextD2, labelNextD3, labelNextD4
+    global labelMoney, labelBet
+    global hand, dHand
+    global hitNum, hitNumD
+    global money
+
+    hand, dHand = [], []
+    hitNum, hitNumD = 0, 0
+
+    try:
+        labelNext1.place_forget()
+        labelNext2.place_forget()
+        labelNext3.place_forget()
+    except:
+        pass
+    try:
+        labelNextD1.place_forget()
+        labelNextD2.place_forget()
+        labelNextD3.place_forget()
+        labelNextD4.place_forget()
+    except:
+        pass
+    try:
+        labelMoney.place_forget()
+        labelBet.place_forget()
+    except:
+        pass
+
+    labelMoney = Label(bottomFrame, text=money, font=("Courier", 40), bg='pink')
+    labelMoney.place(x=630, y=30)
+    labelBet = Label(bottomFrame, text='0', font=("Courier", 40), bg='pink')
+    labelBet.place(x=430, y=30)
 
 
 mWindow = Tk()
@@ -219,9 +258,18 @@ labelYouHandTotal.place(x=230, y=200)
 buttonDeal = Button(bottomFrame, text="DEAL", height=3, width=8, command=deal)
 buttonHit = Button(bottomFrame, text="HIT", height=3, width=8, command=hit)
 buttonStand = Button(bottomFrame, text="STAND", height=3, width=8, command=stand)
-
 buttonDeal.place(x=50, y=30)
-buttonHit.place(x=230, y=30)
-buttonStand.place(x=330, y=30)
+buttonHit.place(x=130, y=30)
+buttonStand.place(x=230, y=30)
+
+labelMoney = Label(bottomFrame, text=money, font=("Courier", 40), bg='pink')
+labelMoney.place(x=630, y=30)
+labelBet = Label(bottomFrame, text='0', font=("Courier", 40), bg='pink')
+labelBet.place(x=430, y=30)
+buttonBet = Button(bottomFrame, text="100", height=3, width=8, command=bet)
+buttonBet.place(x=330, y=30)
+
+buttonRefresh = Button(bottomFrame, text="Refresh", font=("Courier", 30), command=refresh)
+buttonRefresh.place(x=800, y=30)
 
 mWindow.mainloop()
